@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  connections PlatformConnection[]
+  threads     Thread[]
+}
+
+model PlatformConnection {
+  id           String   @id @default(uuid())
+  userId       String
+  platform     String   // e.g., 'email', 'telegram', 'whatsapp'
+  identifier   String   // email address, bot token, etc.
+  credentials  String?  // encrypted JSON payload
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User     @relation(fields: [userId], references: [id])
+  messages     Message[]
+
+  @@unique([userId, platform, identifier])
+}
+
+model Thread {
+  id           String   @id @default(uuid())
+  userId       String
+  title        String?
+  aiSummary    String?
+  isArchived   Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user         User     @relation(fields: [userId], references: [id])
+  messages     Message[]
+}
+
+model Message {
+  id               String   @id @default(uuid())
+  threadId         String
+  connectionId     String
+  originalId       String   // ID from the external platform
+  senderName       String?
+  senderIdentifier String?  // email, phone number, etc.
+  content          String
+  isRead           Boolean  @default(false)
+  isIncoming       Boolean  // true if received, false if sent by our user
+  aiClassification String?  // 'spam', 'important', 'promotional', 'normal'
+  createdAt        DateTime @default(now())
+
+  thread           Thread             @relation(fields: [threadId], references: [id])
+  connection       PlatformConnection @relation(fields: [connectionId], references: [id])
+
+  @@unique([connectionId, originalId])
+}
