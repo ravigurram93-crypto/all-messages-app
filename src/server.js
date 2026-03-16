@@ -1,4 +1,4 @@
-/*
+gi/*
  * AI Universal Inbox - Main Server Entry Point
  */
 import express from 'express';
@@ -22,9 +22,9 @@ const PORT = process.env.PORT || 8001;
 export const io = new Server(httpServer, {
   cors: {
     origin: [
-      "http://localhost:5173", 
-      "http://localhost:5174", 
-      "http://127.0.0.1:5173", 
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://127.0.0.1:5173",
       "http://127.0.0.1:5174",
       /\.vercel\.app$/
     ],
@@ -57,15 +57,14 @@ const startServer = async () => {
   try {
     await connectRedis(); // Gracefully fails if Redis isn't running locally
     httpServer.listen(PORT, () => {
-        console.log(`Server is running on port ${PORT}`);
-        startAiWorker(); // Fire off the background AI polling
+      console.log(`Server is running on port ${PORT}`);
+      startAiWorker(); // Fire off the background AI polling
     });
   } catch (error) {
     console.error('Failed to start server:', error);
     process.exit(1);
   }
 };
-
 startServer();
 
 // Trigger nodemon restart
