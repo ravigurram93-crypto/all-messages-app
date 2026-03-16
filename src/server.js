@@ -1,4 +1,4 @@
-gi/*
+/*
  * AI Universal Inbox - Main Server Entry Point
  */
 import express from 'express';
