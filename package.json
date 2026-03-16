@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "postinstall": "prisma generate && prisma db push --accept-data-loss",
+    "postinstall": "prisma generate",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "client": "npm run dev --prefix frontend",
