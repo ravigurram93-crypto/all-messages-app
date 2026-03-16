@@ -1,7 +1,10 @@
 import { createClient } from 'redis';
 
 const redisClient = createClient({
-  url: process.env.REDIS_URL || 'redis://localhost:6379'
+  url: process.env.REDIS_URL || 'redis://localhost:6379',
+  socket: {
+    reconnectStrategy: false // Disable retries so it doesn't crash the server when Redis is missing
+  }
 });
 
 redisClient.on('error', (err) => console.log('Redis Client Error', err));
